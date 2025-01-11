@@ -1,32 +1,26 @@
-# unplugin-starter [![npm](https://img.shields.io/npm/v/unplugin-starter.svg)](https://npmjs.com/package/unplugin-starter)
+# umb-vue [![npm](https://img.shields.io/npm/v/umb-vue.svg)](https://npmjs.com/package/umb-vue)
 
-[![Unit Test](https://github.com/sxzz/unplugin-starter/actions/workflows/unit-test.yml/badge.svg)](https://github.com/sxzz/unplugin-starter/actions/workflows/unit-test.yml)
+[![Unit Test](https://github.com/sxzz/unplugin-starter/actions/workflows/unit-test.yml/badge.svg)](https://github.com/jojk0/umb-vue/actions/workflows/unit-test.yml)
 
-Starter template for [unplugin](https://github.com/unjs/unplugin).
+Vue.js integrations for [Umbraco CMS](https://docs.umbraco.com/umbraco-cms) 14+ Backoffice.
 
-<!-- Remove Start -->
+## 🚧 DISCLAIMER 🚧
+**This package is in active development and is not ready for any use at the moment.**
 
-## Template Usage
+## Background
 
-To use this template, clone it down using:
+As [Umbraco 14 has been shipped](https://umbraco.com/blog/umbraco-14-release/), their Backoffice has been completely rewritten to use custom elements with [Lit](https://lit.dev/). This enables to use any framework of choice inside Umbraco Backoffice, allowing endless possibilities for integrations. Through [Extension Manifests](https://docs.umbraco.com/umbraco-cms/customizing/extending-overview/extension-registry/extension-manifest), any functionality inside the Backoffice can be extended, or new features created altogether. Due to Vue's excellent performance and [ease of use as Custom Elements](https://vuejs.org/guide/extras/web-components), its components can be seamlessly integrated into Umbraco Backoffice. This package removes the need to handle with Lit Elements and allows to use Umbraco integrations directly inside Vue files. 
 
-```bash
-npx degit sxzz/unplugin-starter unplugin-my-plugin
-```
+## Features
 
-And do a global replacement of `unplugin-starter` with your plugin name.
-
-Then you can start developing your unplugin 🔥
-
-To run unit tests, run: `pnpm run test`.
-To release a new version, run: `pnpm run release`.
-
-<!-- Remove End -->
+- 🧩 Vue SFC custom elements as Umbraco Extensions
+- 🔗 Access Umbraco Backoffice APIs via Vue composables
+- 🤖 Auto-registration and bundling of extensions
 
 ## Installation
 
 ```bash
-npm i -D unplugin-starter
+pnpm i -D umb-vue
 ```
 
 <details>
@@ -34,10 +28,10 @@ npm i -D unplugin-starter
 
 ```ts
 // vite.config.ts
-import UnpluginStarter from 'unplugin-starter/vite'
+import UmbVue from 'umb-vue/vite'
 
 export default defineConfig({
-  plugins: [UnpluginStarter()],
+  plugins: [UmbVue()],
 })
 ```
 
@@ -48,10 +42,10 @@ export default defineConfig({
 
 ```ts
 // rollup.config.js
-import UnpluginStarter from 'unplugin-starter/rollup'
+import UmbVue from 'umb-vue/rollup'
 
 export default {
-  plugins: [UnpluginStarter()],
+  plugins: [UmbVue()],
 }
 ```
 
@@ -62,10 +56,10 @@ export default {
 
 ```ts
 // rolldown.config.js
-import UnpluginStarter from 'unplugin-starter/rolldown'
+import UmbVue from 'umb-vue/rolldown'
 
 export default {
-  plugins: [UnpluginStarter()],
+  plugins: [UmbVue()],
 }
 ```
 
@@ -76,10 +70,10 @@ export default {
 
 ```ts
 import { build } from 'esbuild'
-import UnpluginStarter from 'unplugin-starter/esbuild'
+import UmbVue from 'umb-vue/esbuild'
 
 build({
-  plugins: [UnpluginStarter()],
+  plugins: [UmbVue()],
 })
 ```
 
@@ -90,11 +84,11 @@ build({
 
 ```js
 // webpack.config.js
-import UnpluginStarter from 'unplugin-starter/webpack'
+import UmbVue from 'umb-vue/webpack'
 
 export default {
   /* ... */
-  plugins: [UnpluginStarter()],
+  plugins: [UmbVue()],
 }
 ```
 
@@ -105,24 +99,100 @@ export default {
 
 ```ts
 // rspack.config.js
-import UnpluginStarter from 'unplugin-starter/rspack'
+import UmbVue from 'umb-vue/rspack'
 
 export default {
   /* ... */
-  plugins: [UnpluginStarter()],
+  plugins: [UmbVue()],
 }
 ```
 
 <br></details>
 
-## Sponsors
+## Setup
 
-<p align="center">
-  <a href="https://cdn.jsdelivr.net/gh/sxzz/sponsors/sponsors.svg">
-    <img src='https://cdn.jsdelivr.net/gh/sxzz/sponsors/sponsors.svg'/>
-  </a>
-</p>
+In your Umbraco project folder, create `App_Plugins` folder, with another folder inside it with your preferred name e.g. `my-package`, with `umbraco-package.json` inside of it with the following content:
+
+```json
+{
+    "$schema": "../../umbraco-package-schema.json",
+    "name": "My Project Name",
+    "version": "0.1.0",
+    "extensions": [
+        {
+            "type": "bundle",
+            "alias": "My.Project.Bundle",
+            "name": "My Bundle",
+            "js": "/App_Plugins/my-package/dist/index.js"
+        }
+    ]
+}
+```
+
+Then, as a separate project, create a dev environment of your choice and configure it accordingly. 
+
+Most importantly, your bundler should:
+
+- output built files to the `./My.Umbraco.Project/App_Plugins/my-package/dist`,
+- have `/App_Plugins/my-package` to be set as a base URL,
+- any module starting with `@umbraco` should be externalized
+  
+Here is an example for Vite setup:
+
+```ts
+// vite.config.ts
+import { defineConfig } from "vite";
+// ...
+
+export default defineConfig({
+    // ...
+    build: {
+        outDir: "../App_Plugins/my-package/dist", // all compiled files will be placed here
+        emptyOutDir: true,
+        sourcemap: true,
+        rollupOptions: {
+            external: [/^@umbraco/], // ignore the Umbraco Backoffice package in the build
+        },
+    },
+    base: "/App_Plugins/my-package/", // the base path of the app in the browser (used for assets)
+});
+```
+
+## Quickstart
+
+Create a Vue file in your `src` folder with `.ce.vue` extension, e.g. `dashboard.ce.vue`. Add the following content:
+
+```vue
+<script lang="ts" setup>
+import { UMB_CURRENT_USER_CONTEXT } from "@umbraco-cms/backoffice/current-user";
+
+defineManifest({
+  type: 'dashboard',
+  alias: "My.Dashboard.MyExtension",
+  name: "My Dashboard",
+  meta: {
+    label: "My Dashboard",
+    pathname: "my-dashboard"
+  }
+})
+
+const { currentUser } = useContext(UMB_CURRENT_USER_CONTEXT)
+
+const fullName = computed(() => currentUser.value.name)
+
+const email = computed(() => currentUser.value.email)
+</script>
+
+<template>
+<section>
+  <h1>Hello, {{ fullName }}</h1>
+  <p>Your email is {{ email }}</p>
+</section>
+</template>
+```
+
+That's it! The file should get picked up and bundled into Umbraco extension. Now, you should be able to see your Vue component inside an extra "My Dashboard" tab in Umbraco Backoffice.
 
 ## License
 
-[MIT](./LICENSE) License © 2025-PRESENT [三咲智子](https://github.com/sxzz)
+[MIT](./LICENSE) License © 2025-PRESENT [JoJk0](https://github.com/jojk0)
