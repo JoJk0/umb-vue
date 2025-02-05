@@ -1,4 +1,12 @@
-# umb-vue [![npm](https://img.shields.io/npm/v/umb-vue.svg)](https://npmjs.com/package/umb-vue)
+<img src="./logo.svg" alt="umb-vue" style="width: 10em; display: block; margin: 3em auto;" />
+
+<h1 style="text-align: center;">
+  <code>umb-vue</code>
+  <p style="font-size: 0.7em; line-height: 3">Umbraco integration for Vue.js</p>
+</h1>
+
+
+[![npm](https://img.shields.io/npm/v/umb-vue.svg)](https://npmjs.com/package/umb-vue)
 
 [![Unit Test](https://github.com/sxzz/unplugin-starter/actions/workflows/unit-test.yml/badge.svg)](https://github.com/jojk0/umb-vue/actions/workflows/unit-test.yml)
 
@@ -16,6 +24,13 @@ As [Umbraco 14 has been shipped](https://umbraco.com/blog/umbraco-14-release/), 
 - 🧩 Vue SFC custom elements as Umbraco Extensions
 - 🔗 Access Umbraco Backoffice APIs via Vue composables
 - 🤖 Auto-registration and bundling of extensions
+- Vue SFCs as Umbraco Extensions
+  - `defineManifest` Vue SFC macro for auto-registration of elements - takes filename as element name by default + prefix; Configure builder as a library with auto-imported extensions
+  - `useContext` composable to access Umbraco Contexts (including custom)
+    - `Observable`s are `computed` properties, auto-observing
+    - Context instance methods are available at component `created` (or `setup()` function) time
+  - `getHostElement` to access element's Umbraco Controller
+  - `v-model` sugar of property editor UIs - `value` and auto-dispatch `property-value-change`
 
 ## Installation
 

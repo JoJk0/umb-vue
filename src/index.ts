@@ -7,7 +7,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
     const options = resolveOptions(rawOptions)
     const filter = createFilter(options.include, options.exclude)
 
-    const name = 'unplugin-starter'
+    const name = 'umb-vue'
     return {
       name,
       enforce: options.enforce,
@@ -18,7 +18,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
 
       // eslint-disable-next-line unused-imports/no-unused-vars
       transform(code, id) {
-        return `// unplugin-starter injected\n${code}`
+        return `// umb-vue injected\n${code}`
       },
     }
   })
