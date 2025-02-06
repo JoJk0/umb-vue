@@ -94,36 +94,6 @@ build({
 
 <br></details>
 
-<details>
-<summary>Webpack</summary><br>
-
-```js
-// webpack.config.js
-import UmbVue from 'umb-vue/webpack'
-
-export default {
-  /* ... */
-  plugins: [UmbVue()],
-}
-```
-
-<br></details>
-
-<details>
-<summary>Rspack</summary><br>
-
-```ts
-// rspack.config.js
-import UmbVue from 'umb-vue/rspack'
-
-export default {
-  /* ... */
-  plugins: [UmbVue()],
-}
-```
-
-<br></details>
-
 ## Setup
 
 In your Umbraco project folder, create `App_Plugins` folder, with another folder inside it with your preferred name e.g. `my-package`, with `umbraco-package.json` inside of it with the following content:

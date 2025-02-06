@@ -1,3 +1,14 @@
 {
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "cSpell.words": [
+    "backoffice",
+    "bumpp",
+    "pluginutils",
+    "rolldown",
+    "sxzz",
+    "tsdown",
+    "umbraco",
+    "unplugin",
+    "vueuse"
+  ]
 }

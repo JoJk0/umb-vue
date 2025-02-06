@@ -5,5 +5,6 @@ export default defineConfig({
   format: 'esm',
   target: 'node18.12',
   clean: true,
-  dts: { transformer: 'oxc', autoAddExts: true },
+  dts: { transformer: 'oxc' },
+  external: [/^@umbraco/, 'vue', /^@vue/, './__global-styles'],
 })
