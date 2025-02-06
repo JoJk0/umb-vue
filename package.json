@@ -29,8 +29,8 @@
   "funding": "https://github.com/sponsors/jojk0",
   "files": [
     "dist",
-    "src/lib/__lib.ts",
-    "src/lib/__global-styles.ts"
+    "src/lib/__global-styles.ts",
+    "src/lib/__lib.ts"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -41,7 +41,6 @@
     "./rollup": "./dist/rollup.js",
     "./rolldown": "./dist/rolldown.js",
     "./esbuild": "./dist/esbuild.js",
-    "./imports": "./dist/imports.js",
     "./*": [
       "./*",
       "./*.d.ts"

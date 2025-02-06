@@ -21,6 +21,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
       enforce: options.enforce,
 
       transformInclude(id) {
+        if (id.includes('umb-vue/src/lib/__lib.ts')) return true
         return filter(id)
       },
 
@@ -55,11 +56,10 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
           const makeComponentName = (filename: string) =>
             kebabToPascalCase(basename(filename, '.ce.vue'))
 
-          const makeCustomExport = (name: string) =>
-            `export * from '../../${name}'` // TODO: path resolution
+          const makeCustomExport = (name: string) => `export * from '/${name}'` // TODO: path resolution
 
           const makeImport = (filename: string) =>
-            `import ${makeComponentName(filename)} from '../../${filename.replaceAll('\\', '/')}'`
+            `import ${makeComponentName(filename)} from '/${filename.replaceAll('\\', '/')}'`
 
           const makeExport = (
             filename: string,
@@ -103,6 +103,9 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
               rollupOptions: {
                 external: [/^@umbraco/],
               },
+            },
+            optimizeDeps: {
+              exclude: ['umb-vue/src/lib/__lib'],
             },
             define: {
               UMB_VUE_ELEMENT_PREFIX: JSON.stringify(
