@@ -28,7 +28,9 @@
   "author": "jojk0 <jacob@jojko.tech>",
   "funding": "https://github.com/sponsors/jojk0",
   "files": [
-    "dist"
+    "dist",
+    "src/lib/__lib.ts",
+    "src/lib/__global-styles.ts"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",

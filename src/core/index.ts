@@ -8,11 +8,14 @@ import { transformDefineManifest } from './define-manifest'
 import { resolveOptions, type Options } from './options'
 
 export const Starter: UnpluginInstance<Options | undefined, false> =
-  createUnplugin((rawOptions) => {
+  createUnplugin((rawOptions = {}) => {
     const options = resolveOptions(rawOptions)
     const filter = createFilter(options.include, options.exclude)
 
     const name = 'umb-vue'
+
+    const libEntry = './node_modules/umb-vue/src/lib/__lib'
+
     return {
       name,
       enforce: options.enforce,
@@ -22,7 +25,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
       },
 
       async transform(_, id) {
-        if (id.includes('admin/umb-vue/__global-styles.ts')) {
+        if (id.includes('umb-vue/src/lib/__global-styles.ts')) {
           const cssUrlsImports = options.css
             ?.map(
               (module, index) =>
@@ -37,7 +40,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
             map: null,
           }
         }
-        if (id.includes('admin/umb-vue/__lib.ts')) {
+        if (id.includes('umb-vue/src/lib/__lib.ts')) {
           const filesGlob = options.include ?? ['./src/**/*.ce.vue']
 
           const filesPromises = glob(filesGlob)
@@ -92,7 +95,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
             build: {
               lib: {
                 entry: {
-                  index: './admin/umb-vue/__lib',
+                  index: libEntry,
                 },
                 formats: ['es'],
               },
@@ -114,7 +117,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
         options: {
           handler: () => ({
             input: {
-              index: './admin/umb-vue/__lib',
+              index: libEntry,
             },
             output: {
               format: 'es',
@@ -135,7 +138,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
         options: {
           handler: () => ({
             input: {
-              index: './admin/umb-vue/__lib',
+              index: libEntry,
             },
             define: {
               UMB_VUE_ELEMENT_PREFIX: JSON.stringify(
@@ -156,7 +159,7 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
             UMB_VUE_ELEMENT_CLASS: JSON.stringify(options.elementClass),
           }
           esb.entryPoints = {
-            index: './admin/umb-vue/__lib',
+            index: libEntry,
           }
           esb.sourcemap = true
           esb.external = ['@umbraco*']
