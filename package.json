@@ -39,6 +39,7 @@
     "./rollup": "./dist/rollup.js",
     "./rolldown": "./dist/rolldown.js",
     "./esbuild": "./dist/esbuild.js",
+    "./imports": "./dist/imports.js",
     "./*": [
       "./*",
       "./*.d.ts"
