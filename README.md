@@ -21,22 +21,21 @@ As [Umbraco 14 has been shipped](https://umbraco.com/blog/umbraco-14-release/), 
 
 ## Features
 
-- 🧩 Vue SFC custom elements as Umbraco Extensions
-- 🔗 Access Umbraco Backoffice APIs via Vue composables
-- 🤖 Auto-registration and bundling of extensions
-- Vue SFCs as Umbraco Extensions
-  - `defineManifest` Vue SFC macro for auto-registration of elements - takes filename as element name by default + prefix; Configure builder as a library with auto-imported extensions
-  - `useContext` composable to access Umbraco Contexts (including custom)
-    - `Observable`s are `computed` properties, auto-observing
-    - Context instance methods are available at component `created` (or `setup()` function) time
-  - `getHostElement` to access element's Umbraco Controller
-  - `v-model` sugar of property editor UIs - `value` and auto-dispatch `property-value-change`
+- 🧩 **Umbraco Vue Element** - Vue SFC custom element as Umbraco Extensions
+
+- 🔗 **Umbraco Vue composables** - Access Umbraco Backoffice APIs via Vue composables
+
+- 🤖 **Extension auto-registration and bundling** - Define manifests inside Vue files
 
 ## Installation
+
+Install the package with your chosen package manager:
 
 ```bash
 pnpm i -D umb-vue
 ```
+
+It can be used with most of common builders:
 
 <details>
 <summary>Vite</summary><br>
@@ -94,7 +93,7 @@ build({
 
 <br></details>
 
-## Setup
+## Umbraco setup
 
 In your Umbraco project folder, create `App_Plugins` folder, with another folder inside it with your preferred name e.g. `my-package`, with `umbraco-package.json` inside of it with the following content:
 
@@ -142,6 +141,28 @@ export default defineConfig({
     base: "/App_Plugins/my-package/", // the base path of the app in the browser (used for assets)
 });
 ```
+
+## Configuration
+
+## API
+
+### `defineUmbVueElement`
+`v-model` sugar of property editor UIs - `value` and auto-dispatch `property-value-change`
+
+### `defineManifest` 
+Vue SFC macro for auto-registration of elements - takes filename as element name by default + prefix; Configure builder as a library with auto-imported extensions
+
+### `useContext` 
+composable to access Umbraco Contexts (including custom ones). `Observable`s are `computed` properties, auto-observing
+
+### `useRepository`
+Use an Umbraco repository in a Vue component.
+
+### `useHostElement`
+Get the host element of the current Umbraco Vue component.
+
+### `useObservable`
+Observe the observable and return reactive binding. Re-exported from [`@vueuse/rxjs`](https://vueuse.org/rxjs/useObservable/)
 
 ## Quickstart
 
