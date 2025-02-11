@@ -6,7 +6,7 @@ export interface Options {
    * Files or directories to scan for custom elements
    * @default ['./src/**\/*.ce.vue']
    */
-  include?: FilterPattern
+  include?: string | string[]
   /**
    * Additional manifest entry imports to be bundled in `index.js` file.
    */
@@ -48,7 +48,7 @@ export function resolveOptions(options: Options): OptionsResolved {
     css: options.css || [],
     elementPrefix: options.elementPrefix || 'umb-vue',
     elementClass: options.elementClass ?? '',
-    include: options.include || [/\.[cm]?[jt]sx?$/],
+    include: options.include || './src/**/*.ce.vue',
     exclude: options.exclude || [/node_modules/],
     enforce: 'enforce' in options ? options.enforce : 'pre',
   }

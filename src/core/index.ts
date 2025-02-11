@@ -1,5 +1,5 @@
 import { glob, readFile } from 'node:fs/promises'
-import { basename, relative } from 'node:path'
+import { basename } from 'node:path'
 import { createFilter } from '@rollup/pluginutils'
 import { MagicStringAST } from '@vue-macros/common'
 import { createUnplugin, type UnpluginInstance } from 'unplugin'
@@ -10,24 +10,26 @@ import { resolveOptions, type Options } from './options'
 export const Starter: UnpluginInstance<Options | undefined, false> =
   createUnplugin((rawOptions = {}) => {
     const options = resolveOptions(rawOptions)
+
     const filter = createFilter(options.include, options.exclude)
 
     const name = 'umb-vue'
 
-    const libEntry = './node_modules/umb-vue/src/lib/__lib'
+    const libEntry = './__lib.ts'
 
     return {
       name,
       enforce: options.enforce,
       resolveId(id) {
-        if (id.includes('/__global-styles')) return `\0${id}`
+        if (id.includes('#global-styles')) return `\0${id}`
+        if (id.includes('__lib.ts')) return `\0${id}`
       },
-      load(id) {
-        if (id === '\0/__global-styles') {
+      async load(id) {
+        if (id === '\0#global-styles') {
           const cssUrlsImports = options.css
             ?.map(
               (module, index) =>
-                `import cssModule${index} from '${module.startsWith('./') ? `./${relative('./umb-vue', module).replaceAll('\\', '/')}` : module}?url'`,
+                `import cssModule${index} from '${module}?url'`,
             )
             .join('\n')
 
@@ -36,30 +38,9 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
             code: [cssUrlsImports, cssUrlsExport].join('\n\n'),
           }
         }
-      },
 
-      transformInclude(id) {
-        if (id.includes('umb-vue/src/lib/__lib.ts')) return true
-        return filter(id)
-      },
-
-      async transform(_, id) {
-        // if (id.includes('/__global-styles')) {
-        //   const cssUrlsImports = options.css
-        //     ?.map(
-        //       (module, index) =>
-        //         `import cssModule${index} from '${module}?url'`,
-        //     )
-        //     .join('\n')
-
-        //   const cssUrlsExport = `export default [${options.css?.map((_, index) => `cssModule${index}`)?.join(', ')}]`
-        //   return {
-        //     code: [cssUrlsImports, cssUrlsExport].join('\n\n'),
-        //     map: null,
-        //   }
-        // }
-        if (id.includes('umb-vue/src/lib/__lib.ts')) {
-          const filesGlob = options.include ?? ['./src/**/*.ce.vue']
+        if (id.endsWith('__lib.ts')) {
+          const filesGlob = options.include
 
           const filesPromises = glob(filesGlob)
 
@@ -85,6 +66,8 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
               element: defineUmbVueElement(${makeComponentName(filename)}, { elementName: '${options.elementPrefix ? `${options.elementPrefix}-` : ''}${basename(filename, '.ce.vue')}' }),
           }`
 
+          const umbVueImport = "import { defineUmbVueElement } from 'umb-vue'"
+
           const imports = files.map(makeImport).join('\n')
 
           const exports = files.map(makeExport).join('\n')
@@ -93,7 +76,9 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
             ?.map(makeCustomExport)
             .join('\n')
 
-          const newSrc = [imports, exports, customExports].join('\n\n')
+          const newSrc = [umbVueImport, imports, exports, customExports].join(
+            '\n\n',
+          )
 
           const ast = new MagicStringAST(newSrc)
 
@@ -102,10 +87,18 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
             map: ast.generateMap(),
           }
         }
+      },
+
+      transformInclude(id) {
+        return filter(id)
+      },
+
+      transform(_, id) {
         if (options.defineManifest) {
           return transformDefineManifest(_, id)
         }
       },
+
       vite: {
         config: {
           handler: () => ({
@@ -120,9 +113,6 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
               rollupOptions: {
                 external: [/^@umbraco/],
               },
-            },
-            optimizeDeps: {
-              exclude: ['umb-vue/src/lib/__lib'],
             },
             define: {
               UMB_VUE_ELEMENT_PREFIX: JSON.stringify(

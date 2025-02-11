@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`rollup > basic.js 1`] = `
+"// index.js
+/* eslint-disable import/no-default-export */
+// This file is only needed for tests to pass. It is not used in the library.
+var __lib = {};
+
+export { __lib as default };
+"
+`;

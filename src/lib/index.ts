@@ -4,6 +4,7 @@ import {
 } from '@umbraco-cms/backoffice/element-api'
 import { customElement } from '@umbraco-cms/backoffice/external/lit'
 import { extend, isPlainObject } from '@vue/shared'
+import umbVueCssUrls from '#global-styles'
 import {
   defineComponent,
   getCurrentInstance,
@@ -28,7 +29,6 @@ import type {
 import type { UmbContextToken } from '@umbraco-cms/backoffice/context-api'
 import type { HTMLElementConstructor } from '@umbraco-cms/backoffice/extension-api'
 import type { umbExtensionsRegistry } from '@umbraco-cms/backoffice/extension-registry'
-import umbVueCssUrls from '/__global-styles'
 
 export { useObservable } from '@vueuse/rxjs'
 
@@ -162,6 +162,7 @@ export function defineUmbVueElement(
     }
   }
 
+  // TOOD: Remove this in favour of decorators once supported by builder
   customElement(extraOptions?.elementName)(UmbVueCustomElement)
 
   return UmbVueCustomElement
