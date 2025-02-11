@@ -14,5 +14,6 @@ export default defineConfig({
     '@vue/shared',
     '@vue-macros/common',
     '/__global-styles',
+    '/__lib',
   ],
 })
