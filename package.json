@@ -1,6 +1,6 @@
 {
   "name": "umb-vue",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "packageManager": "pnpm@10.2.0",
   "description": "Vue.js custom elements integration for Umbraco backoffice",
   "type": "module",
