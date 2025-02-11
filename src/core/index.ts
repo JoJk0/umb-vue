@@ -1,5 +1,5 @@
 import { glob, readFile } from 'node:fs/promises'
-import { basename } from 'node:path'
+import { basename, relative } from 'node:path'
 import { createFilter } from '@rollup/pluginutils'
 import { MagicStringAST } from '@vue-macros/common'
 import { createUnplugin, type UnpluginInstance } from 'unplugin'
@@ -19,6 +19,24 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
     return {
       name,
       enforce: options.enforce,
+      resolveId(id) {
+        if (id.includes('/__global-styles')) return `\0${id}`
+      },
+      load(id) {
+        if (id === '\0/__global-styles') {
+          const cssUrlsImports = options.css
+            ?.map(
+              (module, index) =>
+                `import cssModule${index} from '${module.startsWith('./') ? `./${relative('./umb-vue', module).replaceAll('\\', '/')}` : module}?url'`,
+            )
+            .join('\n')
+
+          const cssUrlsExport = `export default [${options.css?.map((_, index) => `cssModule${index}`)?.join(', ')}]`
+          return {
+            code: [cssUrlsImports, cssUrlsExport].join('\n\n'),
+          }
+        }
+      },
 
       transformInclude(id) {
         if (id.includes('umb-vue/src/lib/__lib.ts')) return true
@@ -26,21 +44,20 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
       },
 
       async transform(_, id) {
-        if (id.includes('umb-vue/src/lib/__global-styles.ts')) {
-          const cssUrlsImports = options.css
-            ?.map(
-              (module, index) =>
-                `import cssModule${index} from '${module}?url'`,
-            )
-            .join('\n')
+        // if (id.includes('/__global-styles')) {
+        //   const cssUrlsImports = options.css
+        //     ?.map(
+        //       (module, index) =>
+        //         `import cssModule${index} from '${module}?url'`,
+        //     )
+        //     .join('\n')
 
-          const cssUrlsExport = `export default [${options.css?.map((_, index) => `cssModule${index}`)?.join(', ')}]`
-
-          return {
-            code: [cssUrlsImports, cssUrlsExport].join('\n\n'),
-            map: null,
-          }
-        }
+        //   const cssUrlsExport = `export default [${options.css?.map((_, index) => `cssModule${index}`)?.join(', ')}]`
+        //   return {
+        //     code: [cssUrlsImports, cssUrlsExport].join('\n\n'),
+        //     map: null,
+        //   }
+        // }
         if (id.includes('umb-vue/src/lib/__lib.ts')) {
           const filesGlob = options.include ?? ['./src/**/*.ce.vue']
 

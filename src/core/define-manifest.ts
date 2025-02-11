@@ -9,7 +9,7 @@ import {
   type BaseOptions,
   type CodeTransform,
 } from '@vue-macros/common'
-import { createUnplugin } from 'unplugin'
+import { createUnplugin, type UnpluginInstance } from 'unplugin'
 import {
   checkDefaultExport,
   filterManifestMacro,
@@ -18,7 +18,6 @@ import {
 } from './utils'
 
 import type { ObjectExpression } from '@babel/types'
-import type { UnpluginInstance } from 'unplugin'
 
 const DEFINE_MANIFEST = 'defineManifest'
 

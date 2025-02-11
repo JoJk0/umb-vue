@@ -20,7 +20,6 @@ import {
   type SetupContext,
   type VueElementConstructor,
 } from 'vue'
-import umbVueCssUrls from './__global-styles'
 import { consumeContext, elObservablesToRefs, getAllMethods } from './utils'
 import type {
   UmbClassInterface,
@@ -29,6 +28,7 @@ import type {
 import type { UmbContextToken } from '@umbraco-cms/backoffice/context-api'
 import type { HTMLElementConstructor } from '@umbraco-cms/backoffice/extension-api'
 import type { umbExtensionsRegistry } from '@umbraco-cms/backoffice/extension-registry'
+import umbVueCssUrls from '/__global-styles'
 
 export { useObservable } from '@vueuse/rxjs'
 
@@ -130,7 +130,8 @@ export function defineUmbVueElement(
 
   if (isPlainObject(Comp)) extend(Comp, extraOptions)
 
-  @customElement(extraOptions?.elementName)
+  // TODO: Support for decorators (wip on Tsdown/Oxc/SWC)
+  // @customElement(extraOptions?.elementName)
   class UmbVueCustomElement extends UmbElementMixin(VueElement) {
     static def = Comp
     constructor(initialProps?: Record<string, any>) {
@@ -160,6 +161,8 @@ export function defineUmbVueElement(
       )
     }
   }
+
+  customElement(extraOptions?.elementName)(UmbVueCustomElement)
 
   return UmbVueCustomElement
 }
