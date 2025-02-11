@@ -182,7 +182,7 @@ defineManifest({
   }
 })
 
-const { currentUser } = useContext(UMB_CURRENT_USER_CONTEXT)
+const { currentUser } = await useContext(UMB_CURRENT_USER_CONTEXT)
 
 const fullName = computed(() => currentUser.value.name)
 
