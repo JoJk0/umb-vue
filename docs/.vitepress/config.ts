@@ -7,6 +7,7 @@ import {
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'UmbVue',
+  base: '/umb-vue/',
   description: 'Integrate Vue elements Umbraco Backoffice',
   lang: 'en-US',
 
