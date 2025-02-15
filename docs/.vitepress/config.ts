@@ -57,7 +57,7 @@ export default defineConfig({
       options: {
         appId: 'FJA32V32NV',
         apiKey: '3c24b843a30cfcd93f92b5987229d5ab',
-        indexName: 'main',
+        indexName: 'Docs',
       },
     },
 
