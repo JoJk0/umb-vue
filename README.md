@@ -1,10 +1,9 @@
-<img src="./logo.svg" alt="umb-vue" style="width: 10em; display: block; margin: 3em auto;" />
+<img src="./docs/public/logo.svg" alt="umb-vue" style="width: 10em; display: block; margin: 3em auto;" />
 
 <h1 style="text-align: center;">
   <code>umb-vue</code>
   <p style="font-size: 0.7em; line-height: 3">Umbraco integration for Vue.js</p>
 </h1>
-
 
 [![npm](https://img.shields.io/npm/v/umb-vue.svg)](https://npmjs.com/package/umb-vue)
 
@@ -13,11 +12,12 @@
 Vue.js integrations for [Umbraco CMS](https://docs.umbraco.com/umbraco-cms) 14+ Backoffice.
 
 ## 🚧 DISCLAIMER 🚧
+
 **This package is in active development and is not ready for any use at the moment.**
 
 ## Background
 
-As [Umbraco 14 has been shipped](https://umbraco.com/blog/umbraco-14-release/), their Backoffice has been completely rewritten to use custom elements with [Lit](https://lit.dev/). This enables to use any framework of choice inside Umbraco Backoffice, allowing endless possibilities for integrations. Through [Extension Manifests](https://docs.umbraco.com/umbraco-cms/customizing/extending-overview/extension-registry/extension-manifest), any functionality inside the Backoffice can be extended, or new features created altogether. Due to Vue's excellent performance and [ease of use as Custom Elements](https://vuejs.org/guide/extras/web-components), its components can be seamlessly integrated into Umbraco Backoffice. This package removes the need to handle with Lit Elements and allows to use Umbraco integrations directly inside Vue files. 
+As [Umbraco 14 has been shipped](https://umbraco.com/blog/umbraco-14-release/), their Backoffice has been completely rewritten to use custom elements with [Lit](https://lit.dev/). This enables to use any framework of choice inside Umbraco Backoffice, allowing endless possibilities for integrations. Through [Extension Manifests](https://docs.umbraco.com/umbraco-cms/customizing/extending-overview/extension-registry/extension-manifest), any functionality inside the Backoffice can be extended, or new features created altogether. Due to Vue's excellent performance and [ease of use as Custom Elements](https://vuejs.org/guide/extras/web-components), its components can be seamlessly integrated into Umbraco Backoffice. This package removes the need to handle with Lit Elements and allows to use Umbraco integrations directly inside Vue files.
 
 ## Features
 
@@ -113,7 +113,7 @@ In your Umbraco project folder, create `App_Plugins` folder, with another folder
 }
 ```
 
-Then, as a separate project, create a dev environment of your choice and configure it accordingly. 
+Then, as a separate project, create a dev environment of your choice and configure it accordingly.
 
 Most importantly, your bundler should:
 
@@ -147,21 +147,27 @@ export default defineConfig({
 ## API
 
 ### `defineUmbVueElement`
+
 `v-model` sugar of property editor UIs - `value` and auto-dispatch `property-value-change`
 
-### `defineManifest` 
+### `defineManifest`
+
 Vue SFC macro for auto-registration of elements - takes filename as element name by default + prefix; Configure builder as a library with auto-imported extensions
 
-### `useContext` 
+### `useContext`
+
 composable to access Umbraco Contexts (including custom ones). `Observable`s are `computed` properties, auto-observing
 
 ### `useRepository`
+
 Use an Umbraco repository in a Vue component.
 
 ### `useHostElement`
+
 Get the host element of the current Umbraco Vue component.
 
 ### `useObservable`
+
 Observe the observable and return reactive binding. Re-exported from [`@vueuse/rxjs`](https://vueuse.org/rxjs/useObservable/)
 
 ## Quickstart
