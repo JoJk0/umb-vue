@@ -1,23 +1,18 @@
-<img src="./docs/public/logo.svg" alt="umb-vue" style="width: 10em; display: block; margin: 3em auto;" />
+<p align="center"><img src="./docs/public/logo.svg" alt="umb-vue" style="width: 10em; display: block; margin: 3em auto;" /></p>
 
-<h1 style="text-align: center;">
-  <code>umb-vue</code>
-  <p style="font-size: 0.7em; line-height: 3">Umbraco integration for Vue.js</p>
-</h1>
+<h1 align="center"><code>umb-vue</code></h1>
+<p align="center">Vue.js integrations for <a href="https://docs.umbraco.com/umbraco-cms">Umbraco CMS</a> 14+ Backoffice.</p>
+<p align="center">
+  <a href="https://jojk0.github.io/umb-vue/">Docs</a> • <a href="https://jojk0.github.io/umb-vue/">Examples</a>
+</p>
+<p align="center">
+  <a href="https://npmjs.com/package/umb-vue"><img src="https://img.shields.io/npm/v/umb-vue.svg" alt="npm" /></a>
+  <a href="https://github.com/jojk0/umb-vue/actions/workflows/unit-test.yml"><img src="https://github.com/sxzz/unplugin-starter/actions/workflows/unit-test.yml/badge.svg" alt="Unit test" /></a>
+</p>
 
-[![npm](https://img.shields.io/npm/v/umb-vue.svg)](https://npmjs.com/package/umb-vue)
-
-[![Unit Test](https://github.com/sxzz/unplugin-starter/actions/workflows/unit-test.yml/badge.svg)](https://github.com/jojk0/umb-vue/actions/workflows/unit-test.yml)
-
-Vue.js integrations for [Umbraco CMS](https://docs.umbraco.com/umbraco-cms) 14+ Backoffice.
-
-## 🚧 DISCLAIMER 🚧
+## 🚧 WIP 🚧
 
 **This package is in active development and is not ready for any use at the moment.**
-
-## Background
-
-As [Umbraco 14 has been shipped](https://umbraco.com/blog/umbraco-14-release/), their Backoffice has been completely rewritten to use custom elements with [Lit](https://lit.dev/). This enables to use any framework of choice inside Umbraco Backoffice, allowing endless possibilities for integrations. Through [Extension Manifests](https://docs.umbraco.com/umbraco-cms/customizing/extending-overview/extension-registry/extension-manifest), any functionality inside the Backoffice can be extended, or new features created altogether. Due to Vue's excellent performance and [ease of use as Custom Elements](https://vuejs.org/guide/extras/web-components), its components can be seamlessly integrated into Umbraco Backoffice. This package removes the need to handle with Lit Elements and allows to use Umbraco integrations directly inside Vue files.
 
 ## Features
 
@@ -27,6 +22,9 @@ As [Umbraco 14 has been shipped](https://umbraco.com/blog/umbraco-14-release/), 
 
 - 🤖 **Extension auto-registration and bundling** - Define manifests inside Vue files
 
+## Background
+
+As [Umbraco 14 has been shipped](https://umbraco.com/blog/umbraco-14-release/), their Backoffice has been completely rewritten to use custom elements with [Lit](https://lit.dev/). This enables to use any framework of choice inside Umbraco Backoffice, allowing endless possibilities for integrations. Through [Extension Manifests](https://docs.umbraco.com/umbraco-cms/customizing/extending-overview/extension-registry/extension-manifest), any functionality inside the Backoffice can be extended, or new features created altogether. Due to Vue's excellent performance and [ease of use as Custom Elements](https://vuejs.org/guide/extras/web-components), its components can be seamlessly integrated into Umbraco Backoffice. This package removes the need to handle with Lit Elements and allows to use Umbraco integrations directly inside Vue files.
 ## Installation
 
 Install the package with your chosen package manager:
