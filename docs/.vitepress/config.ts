@@ -13,17 +13,16 @@ export default defineConfig({
 
   /* prettier-ignore */
   head: [
-    ['link', { rel: 'icon', href: '/logo.svg' }],
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/vitepress-logo-mini.svg' }],
-    ['link', { rel: 'icon', type: 'image/png', href: '/vitepress-logo-mini.png' }],
+    ['link', { rel: 'icon', href: '/umb-vue/logo.svg' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/umb-vue/logo.svg' }],
     ['meta', { name: 'theme-color', content: '#5f67ee' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:locale', content: 'en' }],
     ['meta', { property: 'og:title', content: 'VitePress | Vite & Vue Powered Static Site Generator' }],
     ['meta', { property: 'og:site_name', content: 'VitePress' }],
-    ['meta', { property: 'og:image', content: 'https://vitepress.dev/vitepress-og.jpg' }],
-    ['meta', { property: 'og:url', content: 'https://vitepress.dev/' }],
-    ['script', { src: 'https://cdn.usefathom.com/script.js', 'data-site': 'AZBRSFGG', 'data-spa': 'auto', defer: '' }]
+    ['meta', { property: 'og:image', content: 'https://jojk0.github.io/umb-vue/logo.svg' }],
+    ['meta', { property: 'og:url', content: 'https://jojk0.github.io/umb-vue' }],
+    ['meta', { name: 'algolia-site-verification', content: 'C00CF830B3D383B1' }]
   ],
 
   lastUpdated: true,
@@ -32,32 +31,6 @@ export default defineConfig({
 
   markdown: {
     config(md) {
-      const fence = md.renderer.rules.fence!
-      md.renderer.rules.fence = function (tokens, idx, options, env, self) {
-        const { localeIndex = 'root' } = env
-        const codeCopyButtonTitle = (() => {
-          switch (localeIndex) {
-            case 'es':
-              return 'Copiar código'
-            case 'fa':
-              return 'کپی کد'
-            case 'ko':
-              return '코드 복사'
-            case 'pt':
-              return 'Copiar código'
-            case 'ru':
-              return 'Скопировать код'
-            case 'zh':
-              return '复制代码'
-            default:
-              return 'Copy code'
-          }
-        })()
-        return fence(tokens, idx, options, env, self).replace(
-          '<button title="Copy Code" class="copy"></button>',
-          `<button title="${codeCopyButtonTitle}" class="copy"></button>`,
-        )
-      }
       md.use(groupIconMdPlugin)
     },
   },
