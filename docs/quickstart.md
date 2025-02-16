@@ -8,7 +8,7 @@
 
 Before you start, make sure you have [Umbraco set up correctly](./umbraco-setup).
 
-`umb-vue` requires Node.js 20.0.0 or higher. You can install it from [nodejs.org](https://nodejs.org/).
+`umb-vue` requires Node v22.13.1 or higher. You can install it from [nodejs.org](https://nodejs.org/).
 
 Install the package with your preferred package manager:
 
@@ -40,7 +40,9 @@ Add the plugin into your builder of choice:
 import UmbVue from 'umb-vue/vite'
 
 export default defineConfig({
-  plugins: [UmbVue()],
+  plugins: [UmbVue({
+    umbracoDir: 'path/to/umbraco'
+  })],
 })
 ```
 
@@ -70,6 +72,8 @@ build({
 ```
 
 :::
+
+If you specified `umbracoDir` in the plugin options, you do not need to set up base and output dirs as the plugin will handle it for you.
 
 Create a Vue file in your `src` folder with `.ce.vue` extension, e.g. `dashboard.ce.vue`. Add the following content:
 

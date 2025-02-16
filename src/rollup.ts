@@ -4,21 +4,20 @@
  * @module
  */
 
-import { Starter } from './core/index'
+import { UmbVue } from './core/index'
 
 /**
  * Rollup plugin
- *
- * @example
+ * 
  * ```ts
  * // rollup.config.js
- * import Starter from 'unplugin-starter/rollup'
+ * import UmbVue from 'umb-vue/rollup'
  *
  * export default {
- *   plugins: [Starter()],
+ *   plugins: [UmbVue()],
  * }
  * ```
  */
-const rollup = Starter.rollup as typeof Starter.rollup
+const rollup = UmbVue.rollup as typeof UmbVue.rollup
 export default rollup
 export { rollup as 'module.exports' }

@@ -27,10 +27,18 @@ export function consumeContext<TContext extends UmbContext>(
   })
 }
 
+/**
+ * Convert pascal case to kebab case
+ * @example pascalToKebabCase('MyComponent') // 'my-component'
+ */
 export function pascalToKebabCase(str?: string): string | undefined {
   return str?.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
+/**
+ * Convert kebab case to pascal case
+ * @example kebabToPascalCase('my-component') // 'MyComponent'
+ */
 export const kebabToPascalCase = (str: string): string =>
   str
     .split('-')

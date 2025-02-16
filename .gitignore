@@ -5,3 +5,12 @@ dist
 .vercel
 .eslintcache
 docs/.vitepress/cache
+example/umbraco/umbraco
+example/umbraco/Properties
+example/umbraco/Views
+example/umbraco/wwwroot
+example/umbraco/.gitignore
+example/umbraco/program.cs
+example/umbraco/umbraco.csproj
+example/umbraco/appsettings.json
+example/umbraco/appsettings.Development.json

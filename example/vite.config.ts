@@ -4,7 +4,6 @@ import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: '/App_Plugins/umb-vue-example/dist/',
   plugins: [
     Vue({
       features: { customElement: true },
@@ -13,9 +12,10 @@ export default defineConfig({
       },
     }),
     UmbVue({
+      umbracoDir: './umbraco',
       include: ['./lib/**/*.ce.vue'],
-      entries: ['lib/index.ts'],
-      css: [],
+      entries: ['./lib/index.ts'],
+      css: ['./lib/style.css'],
     }),
     AutoImport({
       imports: ['vue', '@vueuse/core'],
@@ -24,7 +24,4 @@ export default defineConfig({
       vueTemplate: true,
     }),
   ],
-  build: {
-    outDir: './umbraco/App_Plugins/umb-vue-example/dist',
-  },
 })

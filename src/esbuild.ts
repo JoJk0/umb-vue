@@ -4,19 +4,18 @@
  * @module
  */
 
-import { Starter } from './core/index'
+import { UmbVue } from './core/index'
 
 /**
  * Esbuild plugin
- *
- * @example
+ * 
  * ```ts
  * import { build } from 'esbuild'
- * import UnpluginStarter from 'unplugin-starter/esbuild'
+ * import UmbVue from 'umb-vue/esbuild'
  * 
- * build({ plugins: [UnpluginStarter()] })
+ * build({ plugins: [UmbVue()] })
 ```
  */
-const esbuild = Starter.esbuild as typeof Starter.esbuild
+const esbuild = UmbVue.esbuild as typeof UmbVue.esbuild
 export default esbuild
 export { esbuild as 'module.exports' }

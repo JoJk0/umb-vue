@@ -12,8 +12,8 @@ importers:
         specifier: ^12.0.0
         version: 12.5.0(typescript@5.7.3)
       umb-vue:
-        specifier: ^0.1.6
-        version: 0.1.6(@umbraco-cms/backoffice@15.2.0-rc(iamtmituho73jkwrmm7fbcfu2q))(rollup@4.34.4)(rxjs@7.8.1)(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
+        specifier: ^0.2.1
+        version: 0.2.1(@umbraco-cms/backoffice@15.2.0-rc(iamtmituho73jkwrmm7fbcfu2q))(rollup@4.34.4)(rxjs@7.8.1)(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.3)
@@ -1141,8 +1141,8 @@ packages:
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
 
-  umb-vue@0.1.6:
-    resolution: {integrity: sha512-s2tXk0Qq4lYeLjua05mFjLAgu1ISkTfuXnZXx9fNWD06+/GLsQTzunBztTTx9F9Pl2I7Kpzj+IoVOj1jKnqFvA==}
+  umb-vue@0.2.1:
+    resolution: {integrity: sha512-fGPJ1WVO3i752LQ5Em+GiZH/68PTu47ZqxX5ha7GuwW8PESHNFd4uSJsUsJC8ouF0bn72JsoHDHSkUq6ip3EJA==}
     engines: {node: '>=18.12.0'}
     peerDependencies:
       '@umbraco-cms/backoffice': ^14.0.0
@@ -2698,7 +2698,7 @@ snapshots:
 
   ufo@1.5.4: {}
 
-  umb-vue@0.1.6(@umbraco-cms/backoffice@15.2.0-rc(iamtmituho73jkwrmm7fbcfu2q))(rollup@4.34.4)(rxjs@7.8.1)(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)):
+  umb-vue@0.2.1(@umbraco-cms/backoffice@15.2.0-rc(iamtmituho73jkwrmm7fbcfu2q))(rollup@4.34.4)(rxjs@7.8.1)(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)):
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.4)
       '@umbraco-cms/backoffice': 15.2.0-rc(iamtmituho73jkwrmm7fbcfu2q)

@@ -20,7 +20,7 @@ export interface Options {
    * The prefix of the elements' name.
    * @default 'umb-vue'
    */
-  elementPrefix?: string
+  elementPrefix?: string | false
   /**
    * The class name(s) applied to elements.
    * If enabled, extension components must only have a single root element, otherwise, warnings will be thrown.
@@ -31,7 +31,12 @@ export interface Options {
    * @default true
    */
   defineManifest?: boolean
-  enforce?: 'pre' | 'post' | undefined
+  /**
+   * The path to the Umbraco directory. 
+   * If provided, the plugin will setup (if necessary) the extension bundle in Umbraco
+   */
+  umbracoDir?: string
+  enforce?: 'pre' | 'post'
 }
 
 type Overwrite<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U
@@ -46,10 +51,11 @@ export function resolveOptions(options: Options): OptionsResolved {
     defineManifest: options.defineManifest ?? true,
     entries: options.entries ?? [],
     css: options.css || [],
-    elementPrefix: options.elementPrefix || 'umb-vue',
+    elementPrefix: options.elementPrefix ?? options.elementPrefix === false ? '' : 'umb-vue',
     elementClass: options.elementClass ?? '',
     include: options.include || './src/**/*.ce.vue',
     exclude: options.exclude || [/node_modules/],
     enforce: 'enforce' in options ? options.enforce : 'pre',
+    umbracoDir: options.umbracoDir ?? '',
   }
 }

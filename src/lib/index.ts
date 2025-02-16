@@ -4,7 +4,6 @@ import {
 } from '@umbraco-cms/backoffice/element-api'
 import { customElement } from '@umbraco-cms/backoffice/external/lit'
 import { extend, isPlainObject } from '@vue/shared'
-import umbVueCssUrls from '#global-styles'
 import {
   defineComponent,
   getCurrentInstance,
@@ -21,6 +20,7 @@ import {
   type SetupContext,
   type VueElementConstructor,
 } from 'vue'
+import type { Options } from '../core/options'
 import { consumeContext, elObservablesToRefs, getAllMethods } from './utils'
 import type {
   UmbClassInterface,
@@ -57,7 +57,7 @@ export function defineUmbVueElement<Props, RawBindings = object>(
   options?: Pick<ComponentOptions, 'name' | 'inheritAttrs' | 'emits'> &
     CustomElementOptions & {
       props?: (keyof Props)[]
-    } & { elementName: string },
+    } & { elementName: string } & Pick<Options, 'elementClass' | 'css'>,
 ): VueElementConstructor<Props> & HTMLElementConstructor<UmbElement>
 
 export function defineUmbVueElement<Props, RawBindings = object>(
@@ -65,17 +65,20 @@ export function defineUmbVueElement<Props, RawBindings = object>(
   options?: Pick<ComponentOptions, 'name' | 'inheritAttrs' | 'emits'> &
     CustomElementOptions & {
       props?: ComponentObjectPropsOptions<Props>
-    } & { elementName: string },
+    } & { elementName: string } & Pick<Options, 'elementClass' | 'css'>,
 ): VueElementConstructor<Props> & HTMLElementConstructor<UmbElement>
 
 // overload 3: defining a custom element from the returned value of
 // `defineComponent`
 export function defineUmbVueElement<
   // this should be `ComponentPublicInstanceConstructor` but that type is not exported
-  T extends { new (...args: any[]): ComponentPublicInstance<any> },
+  T extends { new(...args: any[]): ComponentPublicInstance<any> },
 >(
   options: T,
-  extraOptions?: CustomElementOptions & { elementName: string },
+  extraOptions?: CustomElementOptions & { elementName: string } & Pick<
+    Options,
+    'elementClass' | 'css'
+  >,
 ): VueElementConstructor<
   T extends DefineComponent<infer P, any, any, any> ? P : unknown
 > &
@@ -108,22 +111,22 @@ export function defineUmbVueElement(
   const Comp = defineComponent(
     isAsyncSetup
       ? {
-          ...options,
-          setup: undefined,
-          render() {
-            return h(
-              Suspense,
-              {},
-              {
-                default: () =>
-                  h(options, {
-                    ...(this as any).$attrs,
-                    ...(this as any).$props,
-                  }),
-              },
-            )
-          },
-        }
+        ...options,
+        setup: undefined,
+        render() {
+          return h(
+            Suspense,
+            {},
+            {
+              default: () =>
+                h(options, {
+                  ...(this as any).$attrs,
+                  ...(this as any).$props,
+                }),
+            },
+          )
+        },
+      }
       : options,
     extraOptions,
   )
@@ -133,14 +136,15 @@ export function defineUmbVueElement(
   // TODO: Support for decorators (wip on Tsdown/Oxc/SWC)
   // @customElement(extraOptions?.elementName)
   class UmbVueCustomElement extends UmbElementMixin(VueElement) {
-    static def = Comp
+    static readonly def = Comp
+    
     constructor(initialProps?: Record<string, any>) {
       super(Comp as any, initialProps, _createApp)
 
       options.emits?.forEach((emit: string) => {
         if (emit.startsWith('update:')) {
           this.addEventListener(emit, (e) => {
-            ;(this as Record<string, any>)[emit.replace('update:', '')] = (
+            ; (this as Record<string, any>)[emit.replace('update:', '')] = (
               e as CustomEvent
             ).detail[0]
             this.dispatchEvent(new CustomEvent('property-value-change'))
@@ -148,17 +152,27 @@ export function defineUmbVueElement(
         }
       })
 
-      umbVueCssUrls.forEach((url) => {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = url
-        this.shadowRoot?.prepend(link)
-      })
+      this.loadGlobalStyles()
+      extraOptions?.css?.forEach(this.addCss)
 
       this.setAttribute(
         'class',
-        [this.getAttribute('class') ?? '', UMB_VUE_ELEMENT_CLASS].join(' '),
+        [this.getAttribute('class') ?? '', UMB_VUE_ELEMENT_CLASS ?? '', extraOptions?.elementClass ?? ''].join(' '),
       )
+    }
+
+    private addCss(url: string) {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      this.shadowRoot?.prepend(link)
+    }
+
+    private async loadGlobalStyles() {
+      try {
+        const umbVueCssUrls = (await import('#global-styles')).default
+        umbVueCssUrls.forEach(this.addCss)
+      } catch { /* skip if no module */ }
     }
   }
 
@@ -207,23 +221,23 @@ export async function useContext<T extends UmbContext>(
 ): Promise<
   {
     controllerAlias?: import('@umbraco-cms/backoffice/controller-api').UmbControllerAlias
-    hostConnected?: (() => void) | undefined
-    hostDisconnected?: (() => void) | undefined
-    destroy?: (() => void) | undefined
+    hostConnected?: (() => void)
+    hostDisconnected?: (() => void)
+    destroy?: (() => void)
   } & {
     [key in keyof T]: T[key] extends import('@umbraco-cms/backoffice/observable-api').Observable<
       infer U
     >
-      ? Readonly<import('vue').Ref<U, U>>
-      : T[key]
+    ? Readonly<import('vue').Ref<U, U>>
+    : T[key]
   }
 > {
   // Host element is mandatory if calling from an async function
   // https://4ark.me/post/87ba8d8b.html/
   const hostEl = (host ?? useHostElement()) as UmbClassInterface &
     UmbElement & {
-      [k in typeof CONTEXT_TOKEN.contextAlias]?: T
-    }
+    [k in typeof CONTEXT_TOKEN.contextAlias]?: T
+  }
 
   if (!hostEl)
     throw new Error(

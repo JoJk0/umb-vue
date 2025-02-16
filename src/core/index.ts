@@ -1,3 +1,4 @@
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { glob, readFile } from 'node:fs/promises'
 import { basename } from 'node:path'
 import { createFilter } from '@rollup/pluginutils'
@@ -6,8 +7,9 @@ import { createUnplugin, type UnpluginInstance } from 'unplugin'
 import { kebabToPascalCase, toCamelCase } from '../lib/utils'
 import { transformDefineManifest } from './define-manifest'
 import { resolveOptions, type Options } from './options'
+import type { BuildEnvironmentOptions } from 'vite'
 
-export const Starter: UnpluginInstance<Options | undefined, false> =
+export const UmbVue: UnpluginInstance<Options | undefined, false> =
   createUnplugin((rawOptions = {}) => {
     const options = resolveOptions(rawOptions)
 
@@ -15,7 +17,56 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
 
     const name = 'umb-vue'
 
-    const libEntry = './__lib.ts'
+    const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
+
+    const getName = (name: string) => {
+      const parts = name.split('-')
+      return parts
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ')
+    }
+
+    const umbracoPackage = {
+      $schema: '../../umbraco-package-schema.json',
+      name: packageJson.name,
+      version: packageJson.version,
+      extensions: [
+        {
+          type: 'bundle',
+          alias: getName(packageJson.name).replaceAll(' ', '.'),
+          name: `${getName(packageJson.name)} Bundle`,
+          js: `/App_Plugins/${packageJson.name}/dist/index.js`,
+        },
+      ],
+    }
+
+    const builderConfig = {
+      libEntry: './__lib.ts',
+      format: 'es' as const,
+      external: [/^@umbraco/],
+      sourcemap: true,
+      define: {
+        UMB_VUE_ELEMENT_PREFIX: JSON.stringify(options.elementPrefix),
+        UMB_VUE_ELEMENT_CLASS: JSON.stringify(options.elementClass)
+      },
+      baseUrl: options.umbracoDir
+        ? `/App_Plugins/${packageJson.name}/dist/`
+        : undefined,
+      outDir: options.umbracoDir
+        ? `${options.umbracoDir}/App_Plugins/${packageJson.name}/dist`
+        : undefined,
+    }
+
+    if (options.umbracoDir) {
+      const path = `${options.umbracoDir}/App_Plugins/${packageJson.name}`
+
+      if (!existsSync(path)) mkdirSync(path, { recursive: true })
+
+      writeFileSync(
+        `${path}/umbraco-package.json`,
+        JSON.stringify(umbracoPackage, null, 2),
+      )
+    }
 
     return {
       name,
@@ -101,79 +152,136 @@ export const Starter: UnpluginInstance<Options | undefined, false> =
 
       vite: {
         config: {
-          handler: () => ({
-            build: {
+          handler: () => {
+            const {
+              libEntry,
+              format,
+              sourcemap,
+              external,
+              baseUrl,
+              outDir,
+              define,
+            } = builderConfig
+
+            const build: BuildEnvironmentOptions = {
               lib: {
                 entry: {
                   index: libEntry,
                 },
-                formats: ['es'],
+                formats: [format],
               },
-              sourcemap: true,
+              sourcemap,
               rollupOptions: {
-                external: [/^@umbraco/],
+                external,
               },
-            },
-            define: {
-              UMB_VUE_ELEMENT_PREFIX: JSON.stringify(
-                options.elementPrefix ?? 'umb-vue',
-              ),
-              UMB_VUE_ELEMENT_CLASS: JSON.stringify(options.elementClass),
-            },
-          }),
+            }
+
+            if (options.umbracoDir) {
+              return {
+                base: baseUrl,
+                build: {
+                  ...build,
+                  outDir,
+                },
+                define,
+              }
+            } else
+              return {
+                build,
+                define,
+              }
+          },
         },
       },
       rollup: {
         options: {
-          handler: () => ({
-            input: {
+          handler: () => {
+            const {
+              libEntry,
+              format,
+              sourcemap,
+              external,
+              baseUrl,
+              outDir,
+              define,
+            } = builderConfig
+
+            const input = {
               index: libEntry,
-            },
-            output: {
-              format: 'es',
-              sourcemap: true,
-            },
-            external: [/^@umbraco/],
-            // TODO: Env vars UMB_VUE_ELEMENT_PREFIX and UMB_VUE_ELEMENT_CLASS
-          }),
+            }
+
+            const output = {
+              format,
+              sourcemap,
+              intro: Object.entries(define)
+                .map(([key, value]) => `const ${key} = ${value};`)
+                .join('\n'),
+            }
+
+            return options.umbracoDir
+              ? {
+                // TODO: BaseURL
+                input,
+                output: {
+                  ...output,
+                  dir: outDir,
+                },
+                external,
+              }
+              : {
+                input,
+                output,
+                external,
+              }
+          },
         },
       },
       rolldown: {
         outputOptions: {
-          handler: () => ({
-            format: 'es',
-            sourcemap: true,
-          }),
+          handler: () => {
+            const { format, sourcemap, baseUrl, outDir } = builderConfig
+
+            return options.umbracoDir
+              ? {
+                dir: outDir,
+                format,
+                sourcemap,
+              }
+              : {
+                format,
+                sourcemap,
+              }
+          },
         },
         options: {
-          handler: () => ({
-            input: {
-              index: libEntry,
-            },
-            define: {
-              UMB_VUE_ELEMENT_PREFIX: JSON.stringify(
-                options.elementPrefix ?? 'umb-vue',
-              ),
-              UMB_VUE_ELEMENT_CLASS: JSON.stringify(options.elementClass),
-            },
-            external: [/^@umbraco/],
-          }),
+          handler: () => {
+            const { libEntry, external, baseUrl, define } = builderConfig
+
+            return {
+              // TODO: BaseURL
+              input: {
+                index: libEntry,
+              },
+              define,
+              external,
+            }
+          },
         },
       },
       esbuild: {
         config: (esb) => {
-          esb.define = {
-            UMB_VUE_ELEMENT_PREFIX: JSON.stringify(
-              options.elementPrefix ?? 'umb-vue',
-            ),
-            UMB_VUE_ELEMENT_CLASS: JSON.stringify(options.elementClass),
-          }
+          const { libEntry, baseUrl, define, format, sourcemap, outDir } =
+            builderConfig
+
+          esb.define = define
           esb.entryPoints = {
             index: libEntry,
           }
-          esb.sourcemap = true
+          esb.sourcemap = sourcemap
           esb.external = ['@umbraco*']
-          esb.format = 'esm'
+          esb.format = `${format}m`
+          esb.outdir = outDir
+          // TODO: BaseURL
         },
       },
     }

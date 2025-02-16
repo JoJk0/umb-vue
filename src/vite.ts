@@ -4,7 +4,7 @@
  * @module
  */
 
-import { Starter } from './core/index'
+import { UmbVue } from './core/index'
 
 /**
  * Vite plugin
@@ -12,13 +12,13 @@ import { Starter } from './core/index'
  * @example
  * ```ts
  * // vite.config.ts
- * import Starter from 'unplugin-starter/vite'
+ * import UmbVue from 'umb-vue/vite'
  *
  * export default defineConfig({
- *   plugins: [Starter()],
+ *   plugins: [UmbVue()],
  * })
  * ```
  */
-const vite = Starter.vite as typeof Starter.vite
+const vite = UmbVue.vite as typeof UmbVue.vite
 export default vite
 export { vite as 'module.exports' }
